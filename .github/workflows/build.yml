@@ -15,8 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; export PATH="$PATH:$PWD/depot_tools";   mkdir dart-sdk; cd dart-sdk; fetch dart;   cd sdk;
-      - run: ls /Users/runner/work/throwaway1/throwaway1/dart-sdk; ls /Users/runner/work/throwaway1/throwaway1/dart-sdk/sdk
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: sdk-1
-      #     path: /Users/runner/work/throwaway1/throwaway1/dart-sdk/sdk.tar.zst
+      # - run: ./tools/build.py --no-goma --mode release --arch x64 create_sdk
+      # - run: tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk
+
+      # Package the retrieved Dart sources, to inspect
+      - run: cd ..; tar -c --zstd -f sdk.tar.zst .
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sdk-1
+          # path: dart-sdk/sdk/sdk.tar.zst
+          path: dart-sdk/sdk.tar.zst
