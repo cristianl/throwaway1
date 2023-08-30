@@ -21,7 +21,7 @@ jobs:
       #     name: sdk-1
       #     # path: dart-sdk/sdk.tar.gz
       #     path: /Users/runner/work/throwaway1/throwaway1/dart-sdk/sdk.tar.gz
-      - run: mkdir dart-sdk; cd dart-sdk; mkdir -p xcodebuild/ReleaseX64/dart-sdk; touch xcodebuild/ReleaseX64/dart-sdk/boo.txt;   tar -cf --zstd sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk
+      - run: mkdir dart-sdk; cd dart-sdk; mkdir -p xcodebuild/ReleaseX64/dart-sdk; touch xcodebuild/ReleaseX64/dart-sdk/boo.txt;   tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk
       - uses: actions/upload-artifact@v3
         with:
           name: sdk-1
