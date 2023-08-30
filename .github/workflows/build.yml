@@ -14,5 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: mkdir -p foo/bar; cd foo/bar
-      - run: pwd
+      - run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; export PATH="$PATH:$PWD/depot_tools";   mkdir dart-sdk; cd dart-sdk; fetch dart;   cd sdk;       cd ../..; tar -c --zstd -f sdk.tar.zst dart-sdk
+      # - run: ./tools/build.py --no-goma --mode release --arch x64 create_sdk
+      # - run: tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sdk-1
+          # path: dart-sdk/sdk/sdk.tar.zst
+          path: sdk.tar.zst
