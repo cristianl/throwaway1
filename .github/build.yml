@@ -1,0 +1,22 @@
+name: Probe1
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macOS-latest]
+        include:
+          - os: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      # - run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; export PATH="$PATH:$PWD/depot_tools";   mkdir dart-sdk; cd dart-sdk; fetch dart;   cd sdk; ./tools/build.py --no-goma --mode release --arch x64 create_sdk;   tar -czf sdk.tar.gz xcodebuild/ReleaseX64/dart-sdk
+      - run: mkdir dart-sdk; cd dart-sdk; mkdir -p xcodebuild/ReleaseX64/dart-sdk; touch xcodebuild/ReleaseX64/dart-sdk/boo.txt;   tar -czf sdk.tar.gz xcodebuild/ReleaseX64/dart-sdk
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sdk-1
+          path: /Users/runner/dart-sdk/sdk.tar.gz
