@@ -13,7 +13,7 @@ jobs:
           - os: macOS-latest
 
     steps:
-      - run: echo "hi" \
-          echo "hi2" \
-          echo "hi3"
-          echo "hi4"
+      - run: echo "hi";
+          echo "hi2";
+          echo "hi3";
+          echo "hi4";
