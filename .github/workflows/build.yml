@@ -4,7 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  dart_version: "3.2.0"
+  dart_version: "3.1.0"
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
 
     steps:
       # - uses: actions/checkout@v3
-      - name: Get source of latest stable release
+      - name: Get source of release ${{ vars.dart_version }}
         run:
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git;
           export PATH="$PATH:$PWD/depot_tools";
