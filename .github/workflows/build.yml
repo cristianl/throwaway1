@@ -4,6 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
+  dart_version: "3.2.0"
 
 jobs:
   build:
@@ -17,15 +18,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git;
+      - name: Get source of latest stable release
+        run:
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git;
           export PATH="$PATH:$PWD/depot_tools";
 
           mkdir dart-sdk; cd dart-sdk; fetch dart;
           cd sdk;
 
-          git reset --hard 3.1.0;
+          git reset --hard $dart_version;
           gclient sync;
 
+      - name: Build from source
+        run:
+          cd dart-sdk/sdk;
           sed -i '' 's/"10.14"/"10.13"/' build/config/mac/mac_sdk.gni;
           sed -i '' -E 's/(#pragma clang diagnostic push|#pragma clang diagnostic ignored "-Wdeprecated"|#pragma clang diagnostic pop)//' runtime/bin/security_context_macos.cc;
 
@@ -33,7 +39,8 @@ jobs:
 
           tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk;
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload SDK artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: sdk-1
+          name: sdk
           path: dart-sdk/sdk/sdk.tar.zst
