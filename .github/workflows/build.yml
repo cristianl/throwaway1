@@ -23,8 +23,7 @@ jobs:
     steps:
       - name: Get source of release version ${{ env.BIOME_VERSION }}
         run:
-          curl --compressed -L -H $api_accept -H $api_ver \
-            'https://api.github.com/repos/biomejs/biome/releases' \
+          curl --compressed -L -H "$api_accept" -H "$api_ver" 'https://api.github.com/repos/biomejs/biome/releases' \
           \
           jq 'first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )' \> rel.json
 
