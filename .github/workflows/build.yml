@@ -47,11 +47,12 @@ jobs:
       - name: Build from source
         run:
           cd biome
+
           cargo build -p rome_cli --release --target ${{ matrix.target }}
 
           cd ..
+
           tar -c --zstd -f biome-cli.tar.zst biome
-          mv biome-cli.tar.zst biome/biome-cli.tar.zst
 
         env:
           RUSTFLAGS: "-C strip=symbols"
@@ -60,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cli
-          path: biome/biome-cli.tar.zst
+          path: biome-cli.tar.zst
