@@ -17,18 +17,18 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-11
+          - os: macos-latest
             target: x86_64-apple-darwin
             code-target: darwin-x64
 
     steps:
-      # Github docs say jq is installed in the runner image, but wherever it is, it isn't in the PATH
+      # Github docs say jq is installed in the runner image, but wherever it is, it isn't in the PATH https://github.com/actions/runner-images/blob/main/images/macos/macos-12-Readme.md#utilities
       - name: Install jq
         uses: dcarbone/install-jq-action@v1.0.1
 
       - name: Get source of release version ${{ env.BIOME_VERSION }}
         run:
-          curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq "${{ env.rel_filter }}" > rel.json
+          curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq '${{ env.rel_filter }}' > rel.json
 
           TARBALL=$(cat rel.json | jq -r '.tarball_url')
 
