@@ -49,10 +49,9 @@ jobs:
           cd biome
           cargo build -p rome_cli --release --target ${{ matrix.target }}
 
-          mkdir dist
-          cp target/${{ matrix.target }}/release/biome dist/biome
-
-          tar -c --zstd -f biome-cli.tar.zst dist/biome
+          cd ..
+          tar -c --zstd -f biome-cli.tar.zst biome
+          mv biome-cli.tar.zst biome/biome-cli.tar.zst
 
         env:
           RUSTFLAGS: "-C strip=symbols"
