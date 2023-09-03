@@ -18,7 +18,7 @@ jobs:
 
     steps:
       # - uses: actions/checkout@v3
-      - name: Get source of release ${{ vars.dart_version }}
+      - name: Get source of release version ${{ env.dart_version }}
         run:
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git;
           export PATH="$PATH:$PWD/depot_tools";
