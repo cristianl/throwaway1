@@ -7,7 +7,7 @@ env:
   BIOME_VERSION: "1.0.0"
   api_accept: "Accept: application/vnd.github.v3+json"
   api_ver: "X-GitHub-Api-Version: 2022-11-28"
-  rel_filter: 'first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )'
+  rel_filter: first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )
 
 jobs:
 
@@ -23,15 +23,6 @@ jobs:
 
     steps:
       # Github docs say jq is installed in the runner image, but wherever it is, it isn't in the PATH
-
-      # - name: Get jq
-      #   run:
-      #     mkdir extbin
-
-      #     curl -L "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-osx-amd64" -o extbin/jq
-
-      #     chmod +x extbin/jq
-
       - name: Install jq
         uses: dcarbone/install-jq-action@v1.0.1
 
