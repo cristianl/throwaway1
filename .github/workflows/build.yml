@@ -1,0 +1,62 @@
+name: Probe2
+
+on: [push, workflow_dispatch]
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: "10.13"
+  BIOME_VERSION: "1.0.0"
+  api_accept: "Accept: application/vnd.github.v3+json"
+  api_ver: "X-GitHub-Api-Version: 2022-11-28"
+
+jobs:
+
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - os: macos-11
+            target: x86_64-apple-darwin
+            code-target: darwin-x64
+
+    steps:
+      - name: Get source of release version ${{ env.BIOME_VERSION }}
+        run:
+          curl --compressed -L -H $api_accept -H $api_ver \
+            'https://api.github.com/repos/biomejs/biome/releases' \
+          \
+          jq 'first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )' \> rel.json
+
+          TARBALL=$(cat rel.json | jq -r '.tarball_url')
+
+          mkdir biome && cd biome
+
+          curl -L $TARBALL | tar --strip-components=1 -x
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Rust toolchain
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build from source
+        run:
+          cd biome
+          cargo build -p rome_cli --release --target ${{ matrix.target }}
+
+          mkdir dist
+          cp target/${{ matrix.target }}/release/biome dist/biome
+
+          tar -c --zstd -f biome-cli.tar.zst dist/biome
+
+        env:
+          RUSTFLAGS: "-C strip=symbols"
+
+      - name: Upload cli artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cli
+          path: biome/biome-cli.tar.zst
