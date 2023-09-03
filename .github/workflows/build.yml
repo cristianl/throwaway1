@@ -28,7 +28,7 @@ jobs:
 
       - name: Get source of release version ${{ env.BIOME_VERSION }}
         run:
-          curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq "$rel_filter" > rel.json
+          curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq "${{ env.rel_filter }}" > rel.json
 
           TARBALL=$(cat rel.json | jq -r '.tarball_url')
 
