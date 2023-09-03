@@ -5,8 +5,8 @@ on: [push, workflow_dispatch]
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
   BIOME_VERSION: "1.0.0"
-  api_accept: "Accept: application/vnd.github.v3+json"
-  api_ver: "X-GitHub-Api-Version: 2022-11-28"
+  api_accept: 'Accept: application/vnd.github.v3+json'
+  api_ver: 'X-GitHub-Api-Version: 2022-11-28'
   rel_filter: first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Get source of release version ${{ env.BIOME_VERSION }}
         run:
-          curl --compressed -L -H "$api_accept" -H "$api_ver" 'https://api.github.com/repos/biomejs/biome/releases' | jq "$rel_filter" > rel.json
+          curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq "$rel_filter" > rel.json
 
           TARBALL=$(cat rel.json | jq -r '.tarball_url')
 
