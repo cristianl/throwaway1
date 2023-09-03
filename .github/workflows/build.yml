@@ -29,19 +29,20 @@ jobs:
 
           curl -L "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-osx-amd64" -o extbin/jq;
 
-          chmod +x extbin/jq
+          chmod +x extbin/jq;
 
       - name: Get source of release version ${{ env.BIOME_VERSION }}
         run:
-          export PATH=$(pwd)/extbin:$PATH
+          export PATH=$(pwd)/extbin:$PATH;
+
           curl --compressed -L -H "$api_accept" -H "$api_ver" 'https://api.github.com/repos/biomejs/biome/releases' | \
-          jq $rel_filter > rel.json
+          jq $rel_filter > rel.json;
 
-          TARBALL=$(cat rel.json | jq -r '.tarball_url')
+          TARBALL=$(cat rel.json | jq -r '.tarball_url');
 
-          mkdir biome && cd biome
+          mkdir biome && cd biome;
 
-          curl -L $TARBALL | tar --strip-components=1 -x
+          curl -L $TARBALL | tar --strip-components=1 -x;
 
       - name: Install Node.js
         uses: actions/setup-node@v3
