@@ -50,7 +50,7 @@ jobs:
 
           cargo build -p rome_cli --release --target ${{ matrix.target }}
 
-          tar -c --zstd -f biome-cli.tar.zst target/${{ matrix.target }}/release
+          mv target/${{ matrix.target }}/release/biome biome
 
         env:
           RUSTFLAGS: "-C strip=symbols"
@@ -59,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cli
-          path: biome/biome-cli.tar.zst
+          path: biome/biome
