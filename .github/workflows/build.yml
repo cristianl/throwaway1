@@ -20,9 +20,11 @@ jobs:
       - name: Get source of release version ${{ env.dart_version }}
         run:
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+
           export PATH="$PATH:$PWD/depot_tools"
 
           mkdir dart-sdk
+
           cd dart-sdk
 
           curl -L "https://github.com/dart-lang/sdk/archive/refs/tags/$dart_version.tar.gz" | tar -x --strip-components=1
@@ -32,7 +34,9 @@ jobs:
       - name: Build from source
         run:
           cd dart-sdk
+
           sed -i '' 's/"10.14"/"10.13"/' build/config/mac/mac_sdk.gni
+
           sed -i '' -E 's/(#pragma clang diagnostic push|#pragma clang diagnostic ignored "-Wdeprecated"|#pragma clang diagnostic pop)//' runtime/bin/security_context_macos.cc
 
           ./tools/build.py --no-goma --mode release --arch x64 create_sdk
