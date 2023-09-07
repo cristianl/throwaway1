@@ -23,17 +23,19 @@ jobs:
 
           export PATH="$PATH:$PWD/depot_tools"
 
-          mkdir dart-sdk
+          mkdir dart-sdk && cd dart-sdk
 
-          cd dart-sdk
+          fetch dart
 
-          curl -L "https://github.com/dart-lang/sdk/archive/refs/tags/$dart_version.tar.gz" | tar -x --strip-components=1
+          cd sdk
+
+          git reset --hard $dart_version
 
           gclient sync
 
       - name: Build from source
         run:
-          cd dart-sdk
+          cd dart-sdk/sdk
 
           sed -i '' 's/"10.14"/"10.13"/' build/config/mac/mac_sdk.gni
 
@@ -47,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: sdk-${{ env.dart_version }}
-          path: dart-sdk/sdk.tar.zst
+          path: dart-sdk/sdk/sdk.tar.zst
