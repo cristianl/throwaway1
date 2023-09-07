@@ -4,7 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  dart_version: "3.1.0"
+  dart_version: "3.1.1"
 
 jobs:
   build:
@@ -17,30 +17,30 @@ jobs:
           - os: macOS-latest
 
     steps:
-      # - uses: actions/checkout@v3
       - name: Get source of release version ${{ env.dart_version }}
         run:
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git;
-          export PATH="$PATH:$PWD/depot_tools";
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+          export PATH="$PATH:$PWD/depot_tools"
 
-          mkdir dart-sdk; cd dart-sdk; fetch dart;
-          cd sdk;
+          mkdir dart-sdk
+          cd dart-sdk
 
-          git reset --hard $dart_version;
-          gclient sync;
+          curl -L "https://github.com/dart-lang/sdk/archive/refs/tags/$dart_version.tar.gz" | tar -x --strip-components=1
+
+          gclient sync
 
       - name: Build from source
         run:
-          cd dart-sdk/sdk;
-          sed -i '' 's/"10.14"/"10.13"/' build/config/mac/mac_sdk.gni;
-          sed -i '' -E 's/(#pragma clang diagnostic push|#pragma clang diagnostic ignored "-Wdeprecated"|#pragma clang diagnostic pop)//' runtime/bin/security_context_macos.cc;
+          cd dart-sdk
+          sed -i '' 's/"10.14"/"10.13"/' build/config/mac/mac_sdk.gni
+          sed -i '' -E 's/(#pragma clang diagnostic push|#pragma clang diagnostic ignored "-Wdeprecated"|#pragma clang diagnostic pop)//' runtime/bin/security_context_macos.cc
 
-          ./tools/build.py --no-goma --mode release --arch x64 create_sdk;
+          ./tools/build.py --no-goma --mode release --arch x64 create_sdk
 
-          tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk;
+          tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk
 
       - name: Upload SDK artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sdk-1
-          path: dart-sdk/sdk/sdk.tar.zst
+          name: sdk-${{ env.dart_version }}
+          path: dart-sdk/sdk.tar.zst
