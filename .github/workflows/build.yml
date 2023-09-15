@@ -49,7 +49,7 @@ jobs:
 
           cd biome
 
-          cargo build -p rome_cli --release --target ${{ matrix.target }}
+          cargo build -p biome_cli --release --target ${{ matrix.target }}
 
           mv target/${{ matrix.target }}/release/biome biome
 
