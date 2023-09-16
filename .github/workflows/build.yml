@@ -45,7 +45,7 @@ jobs:
 
       - name: Build from source
         run:
-          export BIOME_VERSION=$(cat rel.json | jq -r '.tag_name' | sed 's/^cli\///')
+          export BIOME_VERSION=$(cat rel.json | jq -r '.tag_name' | sed 's/^cli\/v//')
 
           cd biome
 
