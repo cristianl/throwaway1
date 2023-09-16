@@ -4,7 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  dart_version: "3.1.1"
+  dart_version: "3.1.2"
 
 jobs:
   build:
@@ -35,6 +35,8 @@ jobs:
 
       - name: Build from source
         run:
+          initial=$(pwd)
+
           cd dart-sdk/sdk
 
           sed -i '' 's/"10.14"/"10.13"/' build/config/mac/mac_sdk.gni
@@ -43,10 +45,12 @@ jobs:
 
           ./tools/build.py --no-goma --mode release --arch x64 create_sdk
 
-          tar -c --zstd -f sdk.tar.zst xcodebuild/ReleaseX64/dart-sdk
+          cd xcodebuild/ReleaseX64
+
+          tar -c --zstd -f $initial/sdk.tar.zst dart-sdk
 
       - name: Upload SDK artifact
         uses: actions/upload-artifact@v3
         with:
           name: sdk-${{ env.dart_version }}
-          path: dart-sdk/sdk/sdk.tar.zst
+          path: sdk.tar.zst
