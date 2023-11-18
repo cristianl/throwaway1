@@ -18,6 +18,9 @@ jobs:
 
     steps:
       - name: Get source of release version ${{ env.dart_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
         run:
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
@@ -34,6 +37,9 @@ jobs:
           gclient sync
 
       - name: Build from source
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
         run:
           initial=$(pwd)
 
