@@ -36,9 +36,9 @@ jobs:
           curl -L $TARBALL | tar --strip-components=1 -x
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install Rust toolchain
         run: rustup target add ${{ matrix.target }}
@@ -57,7 +57,7 @@ jobs:
           RUSTFLAGS: "-C strip=symbols"
 
       - name: Upload cli artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cli
           path: biome/biome
