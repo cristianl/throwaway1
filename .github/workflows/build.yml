@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-11
             target: x86_64-apple-darwin
             code-target: darwin-x64
 
@@ -41,11 +41,14 @@ jobs:
           node-version: 20
 
       - name: Install Rust toolchain
-        run: rustup target add x86_64-apple-darwin
+        run: rustup target add ${{ matrix.target }}
 
       - name: Build from source
         run:
           export BIOME_VERSION=$(cat rel.json | jq -r '.tag_name' | sed 's/^cli\/v//')
+
+          echo $BIOME_VERSION
+          echo ${{ matrix.target }}
 
           cd biome
 
