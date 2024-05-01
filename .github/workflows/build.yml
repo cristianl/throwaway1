@@ -41,7 +41,7 @@ jobs:
           node-version: 20
 
       - name: Install Rust toolchain
-        run: rustup target add ${{ matrix.target }}
+        run: rustup target add x86_64-apple-darwin
 
       - name: Build from source
         run:
