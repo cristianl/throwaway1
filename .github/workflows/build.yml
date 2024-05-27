@@ -1,0 +1,25 @@
+name: Probe4
+
+on: [push, workflow_dispatch]
+
+env:
+  run_id: 8471303268
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macOS-latest]
+        include:
+          - os: macOS-latest
+
+    steps:
+      - name: Download Dart artifact
+        run:
+          echo $run_id
+
+          gh run download $run_id
+
+          ls -al
