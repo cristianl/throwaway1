@@ -19,8 +19,12 @@ jobs:
     steps:
       - name: Download Dart artifact
         run:
-          echo $run_id
+          git clone https://github.com/cristianl/throwaway1
+
+          cd throwaway1
 
           gh run download $run_id
 
           ls -al
+
+          cd .. && ls -al
