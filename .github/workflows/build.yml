@@ -4,6 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   run_id: 8471303268
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   build:
