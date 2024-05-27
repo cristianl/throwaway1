@@ -3,6 +3,7 @@ name: Probe4
 on: [push, workflow_dispatch]
 
 env:
+  artifact_name: sdk-3.3.3
   run_id: 8471303268
   GH_TOKEN: ${{ github.token }}
 
@@ -25,6 +26,4 @@ jobs:
 
           gh run download $run_id
 
-          ls -al
-
-          cd .. && ls -al
+          ls -al $artifact_name
