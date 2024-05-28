@@ -17,9 +17,17 @@ jobs:
           - os: macOS-latest
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 'probe1'
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Inspect root
+        run:
+          ls -al .
 
       - name: Get source of release version ${{ env.dart_version }}
         run:
