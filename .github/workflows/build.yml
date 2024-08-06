@@ -59,7 +59,7 @@ jobs:
 
           sed -i '' -E 's/(#pragma clang diagnostic push|#pragma clang diagnostic ignored "-Wdeprecated"|#pragma clang diagnostic pop)//' runtime/bin/security_context_macos.cc
 
-          ./tools/build.py --no-goma --mode release --arch x64 create_sdk
+          ./tools/build.py --mode release --arch x64 create_sdk
 
           cd xcodebuild/ReleaseX64
 
