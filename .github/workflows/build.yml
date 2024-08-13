@@ -6,7 +6,7 @@ env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
   api_accept: 'Accept: application/vnd.github.v3+json'
   api_ver: 'X-GitHub-Api-Version: 2022-11-28'
-  rel_filter: first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )
+  rel_filter: 'first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )'
 
 jobs:
 
@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-12
+          - os: macos-13
             target: x86_64-apple-darwin
             code-target: darwin-x64
 
