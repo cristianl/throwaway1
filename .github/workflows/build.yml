@@ -45,7 +45,7 @@ jobs:
 
           egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
 
-          egrep -rl 'std::filesystem::path ' src | xargs -I@ sed -i '' 's|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
+          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' 's|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
 
           ./configure
 
