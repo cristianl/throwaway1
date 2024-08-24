@@ -19,11 +19,11 @@ jobs:
     steps:
       # - uses: actions/checkout@v4
       #   with:
-      #     ref: 'probe1'
+      #     ref: 'probe5'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11'
 
       - name: Get source and build
         run:
@@ -31,9 +31,21 @@ jobs:
 
           curl -L "https://github.com/nodejs/node/archive/refs/tags/v${{ env.node_version }}.tar.gz" | tar -x
 
+          curl -L "https://github.com/gulrak/filesystem/archive/refs/heads/master.zip" -o filesystem.zip
+
+          unzip filesystem.zip
+
+          mv filesystem-master/include/ghc node-${{ env.node_version }}/src/ghc
+
+          rm filesystem.zip
+
           cd "node-${{ env.node_version }}"
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
+
+          egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
+
+          egrep -rl 'std::filesystem::path ' src | xargs -I@ sed -i '' 's|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
 
           ./configure
 
@@ -41,7 +53,9 @@ jobs:
 
           cd out/Release
 
-          tar -c --zstd -f $initial/node.tar.zst node
+          rm -r obj.target
+
+          tar -c --zstd -f $initial/node.tar.zst out/Release
 
       - name: Upload SDK artifact
         uses: actions/upload-artifact@v4
