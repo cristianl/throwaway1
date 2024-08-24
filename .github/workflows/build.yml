@@ -33,6 +33,8 @@ jobs:
 
           cd "node-${{ env.node_version }}"
 
+          sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
+
           ./configure
 
           make -j4
