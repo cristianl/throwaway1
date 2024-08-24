@@ -19,11 +19,11 @@ jobs:
     steps:
       # - uses: actions/checkout@v4
       #   with:
-      #     ref: 'probe5'
+      #     ref: 'probe1'
 
-      # - uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Get source and build
         run:
@@ -51,9 +51,7 @@ jobs:
 
           make -j4
 
-          cd out/Release
-
-          rm -r obj.target
+          rm -r out/Release/obj.target
 
           tar -c --zstd -f $initial/node.tar.zst out/Release
 
