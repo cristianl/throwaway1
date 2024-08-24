@@ -39,9 +39,9 @@ jobs:
 
           make -j4
 
-          cd out
+          cd out/Release
 
-          tar -c --zstd -f $initial/node.tar.zst Release
+          tar -c --zstd -f $initial/node.tar.zst node
 
       - name: Upload SDK artifact
         uses: actions/upload-artifact@v4
