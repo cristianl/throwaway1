@@ -34,9 +34,9 @@ jobs:
 
           curl -L "https://github.com/nodejs/node/archive/refs/tags/v${{ env.node_version }}.tar.gz" | tar -x
 
-          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.3.2/filesystem.hpp" -o src/ghc/filesystem.hpp
-
           cd "node-${{ env.node_version }}"
+
+          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.3.2/filesystem.hpp" -o src/ghc/filesystem.hpp
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
