@@ -1,0 +1,42 @@
+name: node20
+
+on: [push, workflow_dispatch]
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: "10.13"
+  node_version: "20.17.0"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macOS-13]
+        include:
+          - os: macOS-13
+
+    steps:
+      - name: Get source and build
+        run:
+          initial=$(pwd)
+
+          curl -L "https://github.com/nodejs/node/archive/refs/tags/v${{ env.node_version }}.tar.gz" | tar -x
+
+          cd "node-${{ env.node_version }}"
+
+          sed -i '' "s/'10.15'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
+
+          ./configure
+
+          make -j4
+
+          rm -r out/Release/obj.target
+
+          tar -c --zstd -f $initial/node.tar.zst out/Release
+
+      - name: Upload SDK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-${{ env.node_version }}
+          path: node.tar.zst
