@@ -31,6 +31,8 @@ jobs:
 
           export LDFLAGS="-L$HOMEBREW_PREFIX/opt/llvm@12/lib -Wl,-rpath,$HOMEBREW_PREFIX/opt/llvm@12/lib"
 
+          export PATH="/usr/local/opt/llvm/bin:/usr/local/opt/bin:$PATH"
+
           ./configure
 
           make -j4
