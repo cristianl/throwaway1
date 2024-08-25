@@ -25,19 +25,16 @@ jobs:
       #   with:
       #     python-version: '3.11'
 
+      # curl -L "https://github.com/gulrak/filesystem/archive/refs/heads/master.zip" -o filesystem.zip && unzip filesystem.zip
+      # mv filesystem-master/include/ghc node-${{ env.node_version }}/src/ghc
+      # rm filesystem.zip
       - name: Get source and build
         run:
           initial=$(pwd)
 
           curl -L "https://github.com/nodejs/node/archive/refs/tags/v${{ env.node_version }}.tar.gz" | tar -x
 
-          curl -L "https://github.com/gulrak/filesystem/archive/refs/heads/master.zip" -o filesystem.zip
-
-          unzip filesystem.zip
-
-          mv filesystem-master/include/ghc node-${{ env.node_version }}/src/ghc
-
-          rm filesystem.zip
+          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.3.2/filesystem.hpp" -o src/ghc/filesystem.hpp
 
           cd "node-${{ env.node_version }}"
 
@@ -45,7 +42,7 @@ jobs:
 
           egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
 
-          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#define __MAC_OS_X_VERSION_MIN_REQUIRED 101300\\\n#include "ghc/filesystem.hpp"|g' @
+          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
 
           ./configure
 
