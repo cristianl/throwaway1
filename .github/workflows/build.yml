@@ -36,7 +36,7 @@ jobs:
 
           cd "node-${{ env.node_version }}"
 
-          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.3.2/filesystem.hpp" -o src/ghc/filesystem.hpp
+          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.5.14/filesystem.hpp" -o src/ghc/filesystem.hpp
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
@@ -44,11 +44,17 @@ jobs:
 
           egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
 
+          export LC_ALL=C.UTF-8
+
+          export LANG=C.UTF-8
+
           ./configure
 
           make -j4
 
           rm -r out/Release/obj.target
+
+          rm out/Release/libv8_base_without_compiler.a; rm out/Release/libv8_initializers.a; rm out/Release/libv8_compiler.a; rm out/Release/libnode.a; rm out/Release/libv8_turboshaft.a
 
           tar -c --zstd -f $initial/node.tar.zst out/Release
 
