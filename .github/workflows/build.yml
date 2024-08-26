@@ -29,9 +29,11 @@ jobs:
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
-          export LDFLAGS="-L$HOMEBREW_PREFIX/opt/llvm@12/lib -Wl,-rpath,$HOMEBREW_PREFIX/opt/llvm@12/lib"
+          export PATH="/usr/local/opt/llvm@12/bin:$PATH"
 
-          export PATH="/usr/local/opt/llvm/bin:/usr/local/opt/bin:$PATH"
+          export CPPFLAGS="-I/usr/local/opt/llvm@12/include"
+
+          export LDFLAGS="-L$HOMEBREW_PREFIX/opt/llvm@12/lib -Wl,-rpath,$HOMEBREW_PREFIX/opt/llvm@12/lib"
 
           ./configure
 
