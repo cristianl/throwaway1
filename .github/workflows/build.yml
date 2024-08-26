@@ -37,6 +37,10 @@ jobs:
 
           export LC_ALL="en_US.UTF-8"
 
+          awk -v n=1 -v s='#include <clocale>' 'NR == n {print s} {print}' src/node_main.cc > src/node_main.cc.tmp && mv -f src/node_main.cc.tmp src/node_main.cc
+
+          awk -v n=98 -v s='  std::setlocale(LC_ALL, "en_US.UTF-8");' 'NR == n {print s} {print}' src/node_main.cc > src/node_main.cc.tmp && mv -f src/node_main.cc.tmp src/node_main.cc
+
           ./configure
 
           make -j4
