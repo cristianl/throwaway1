@@ -43,7 +43,7 @@ jobs:
 
           egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#boost::filesystem#g" @
 
-          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include <boost/filesystem.hpp>|g' @
+          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#define BOOST_FILESYSTEM_VERSION 4\\\n#define BOOST_FILESYSTEM_NO_DEPRECATED 1\\\n#include <boost/filesystem.hpp>|g' @
 
           ./configure
 
