@@ -51,6 +51,10 @@ jobs:
 
           sed -i '' 's/define SUPPORT_TIMELINE 1/define SUPPORT_TIMELINE__DISABLE 0/' runtime/vm/globals.h
 
+          sed -e '/TimelineBeginEndScope tbes2/d' -e '/WriteAppAOTSnapshot/d'  runtime/vm/dart_api_impl.cc
+
+          sed -e '/TimelineBeginEndScope tbes##name/d' -e '/Timeline::GetIsolateStream/d'   runtime/vm/isolate_reload.cc
+
       - name: Build from source
         run:
           initial=$(pwd)
