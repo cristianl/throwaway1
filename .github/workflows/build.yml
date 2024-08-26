@@ -16,7 +16,6 @@ jobs:
         include:
           - os: macOS-13
 
-    # awk '/\/\// && !done { print "#define GHC_WITH_EXCEPTIONS"; done=1;}; 1;' src/ghc/filesystem.hpp > src/ghc/filesystem.hpp.tmp && mv -f src/ghc/filesystem.hpp.tmp src/ghc/filesystem.hpp
     steps:
       - name: Get source and build
         run:
@@ -27,6 +26,8 @@ jobs:
           cd "node-${{ env.node_version }}"
 
           mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.5.14/filesystem.hpp" -o src/ghc/filesystem.hpp
+
+          awk '/\/\// && !done { print "#define GHC_WITH_EXCEPTIONS"; done=1;}; 1;' src/ghc/filesystem.hpp > src/ghc/filesystem.hpp.tmp && mv -f src/ghc/filesystem.hpp.tmp src/ghc/filesystem.hpp
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
