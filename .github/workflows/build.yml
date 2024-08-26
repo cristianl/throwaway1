@@ -16,34 +16,23 @@ jobs:
         include:
           - os: macOS-13
 
+    # awk '/\/\// && !done { print "#define GHC_WITH_EXCEPTIONS"; done=1;}; 1;' src/ghc/filesystem.hpp > src/ghc/filesystem.hpp.tmp && mv -f src/ghc/filesystem.hpp.tmp src/ghc/filesystem.hpp
     steps:
       - name: Get source and build
         run:
-          initial="$PWD"
+          initial=$(pwd)
 
           curl -L "https://github.com/nodejs/node/archive/refs/tags/v${{ env.node_version }}.tar.gz" | tar -x
 
           cd "node-${{ env.node_version }}"
 
-          NODEDIR="$PWD"
-
-          curl -L "https://boostorg.jfrog.io/artifactory/main/release/1.86.0/source/boost_1_86_0.tar.bz2" | tar -x
-
-          cd boost_1_86_0 && ./bootstrap.sh
-
-          ./b2 link=static -mmacosx-version-min=10.13 --with-filesystem --with-system
-
-          cd $NODEDIR
-
-          export CXXFLAGS="-I$NODEDIR/boost_1_86_0"
-
-          export LDFLAGS="-L$NODEDIR/boost_1_86_0/stage/lib -lboost_filesystem"
+          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.5.14/filesystem.hpp" -o src/ghc/filesystem.hpp
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
-          egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#boost::filesystem#g" @
+          egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
 
-          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#define BOOST_FILESYSTEM_VERSION 4\\\n#define BOOST_FILESYSTEM_NO_DEPRECATED 1\\\n#include <boost/filesystem.hpp>|g' @
+          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
 
           ./configure
 
