@@ -53,7 +53,7 @@ jobs:
 
           sed -i '' -e '/TimelineBeginEndScope tbes2/d' -e '/WriteAppAOTSnapshot/d'  runtime/vm/dart_api_impl.cc
 
-          sed -i '' -e '/TimelineBeginEndScope tbes##name/d' -e '/Timeline::GetIsolateStream/d'   runtime/vm/isolate_reload.cc
+          sed -i '' -e '/TimelineBeginEndScope tbes##name/d' -e '/Timeline::GetIsolateStream/d' -e '/TIMELINE_SCOPE/d'  runtime/vm/isolate_reload.cc
 
       - name: Build from source
         run:
