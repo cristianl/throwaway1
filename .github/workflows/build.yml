@@ -29,6 +29,8 @@ jobs:
 
           awk '/\/\// && !done { print "#define GHC_WITH_EXCEPTIONS"; done=1;}; 1;' src/ghc/filesystem.hpp > src/ghc/filesystem.hpp.tmp && mv -f src/ghc/filesystem.hpp.tmp src/ghc/filesystem.hpp
 
+          sed -i '' '2507,2527d' src/ghc/filesystem.hpp
+
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
           egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
