@@ -4,7 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  dart_version: "3.5.0"
+  dart_version: "3.5.1"
 
 jobs:
   build:
@@ -48,6 +48,8 @@ jobs:
           af_base="$initial/.github/action-files"
 
           mv $af_base/runtime/bin/security_context_macos.cc runtime/bin/security_context_macos.cc; mv $af_base/runtime/vm/timeline.cc runtime/vm/timeline.cc; mv $af_base/runtime/vm/timeline.h runtime/vm/timeline.h; mv $af_base/runtime/vm/timeline_macos.cc runtime/vm/timeline_macos.cc
+
+          sed -i '' 's/define SUPPORT_TIMELINE 1/define SUPPORT_TIMELINE__DISABLE 0/' runtime/vm/globals.h
 
       - name: Build from source
         run:
