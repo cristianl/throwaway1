@@ -19,21 +19,31 @@ jobs:
     steps:
       - name: Get source and build
         run:
-          initial=$(pwd)
+          initial="$PWD"
 
           curl -L "https://github.com/nodejs/node/archive/refs/tags/v${{ env.node_version }}.tar.gz" | tar -x
 
-          brew install llvm@9
-
           cd "node-${{ env.node_version }}"
+
+          NODEDIR="$PWD"
+
+          curl -L "https://boostorg.jfrog.io/artifactory/main/release/1.86.0/source/boost_1_86_0.tar.bz2" | tar -x
+
+          cd boost_1_86_0 && ./bootstrap.sh
+
+          ./b2 link=static -mmacosx-version-min=10.13 --with-filesystem --with-system
+
+          cd $NODEDIR
+
+          export CXXFLAGS="-I$NODEDIR/boost_1_86_0"
+
+          export LDFLAGS="-L$NODEDIR/boost_1_86_0/stage/lib -lboost_filesystem"
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
-          export PATH="/usr/local/opt/llvm@9/bin:$PATH"
+          egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#boost::filesystem#g" @
 
-          export CPPFLAGS="-I/usr/local/opt/llvm@9/include"
-
-          export LDFLAGS="-L$HOMEBREW_PREFIX/opt/llvm@9/lib -Wl,-rpath,$HOMEBREW_PREFIX/opt/llvm@12/lib"
+          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include <boost/filesystem.hpp>|g' @
 
           ./configure
 
