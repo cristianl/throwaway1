@@ -35,7 +35,7 @@ jobs:
 
           egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
 
-          export LC_ALL="UTF-8"
+          export LC_ALL="en_US.UTF-8"
 
           ./configure
 
