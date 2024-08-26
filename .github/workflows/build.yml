@@ -4,7 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  node_version: "22.6.0"
+  node_version: "22.7.0"
 
 jobs:
   build:
@@ -34,6 +34,8 @@ jobs:
           egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
 
           egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
+
+          export LC_ALL="UTF-8"
 
           ./configure
 
