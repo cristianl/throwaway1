@@ -46,6 +46,10 @@ jobs:
 
           awk -v n=1 -v s='#include <locale>' 'NR == n {print s} {print}' src/compile_cache.cc > src/compile_cache.cc.tmp && mv -f src/compile_cache.cc.tmp src/compile_cache.cc
 
+          awk -v n=111 -v s='  std::locale::global(std::locale("en_US.UTF-8")); std::setlocale(LC_ALL, "en_US.UTF-8");' 'NR == n {print s} {print}' src/api/embed_helpers.cc > src/api/embed_helpers.cc.tmp && mv -f src/api/embed_helpers.cc.tmp src/api/embed_helpers.cc
+
+          awk -v n=1 -v s='#include <locale>' 'NR == n {print s} {print}' src/api/embed_helpers.cc > src/api/embed_helpers.cc.tmp && mv -f src/api/embed_helpers.cc.tmp src/api/embed_helpers.cc
+
           ./configure
 
           LC_ALL="en_US.UTF-8" make -j4
