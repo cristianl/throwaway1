@@ -16,6 +16,7 @@ jobs:
         include:
           - os: macOS-13
 
+    # sed -i '' '2520,2540d' src/ghc/filesystem.hpp
     steps:
       - name: Get source and build
         run:
@@ -29,8 +30,6 @@ jobs:
 
           awk '/\/\// && !done { print "#define GHC_WITH_EXCEPTIONS"; done=1;}; 1;' src/ghc/filesystem.hpp > src/ghc/filesystem.hpp.tmp && mv -f src/ghc/filesystem.hpp.tmp src/ghc/filesystem.hpp
 
-          sed -i '' '2520,2540d' src/ghc/filesystem.hpp
-
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
           egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
@@ -43,9 +42,13 @@ jobs:
 
           awk -v n=98 -v s='  std::locale::global(std::locale("en_US.UTF-8"));' 'NR == n {print s} {print}' src/node_main.cc > src/node_main.cc.tmp && mv -f src/node_main.cc.tmp src/node_main.cc
 
+          awk -v n=365 -v s='  std::locale::global(std::locale("en_US.UTF-8"));' 'NR == n {print s} {print}' src/compile_cache.cc > src/compile_cache.cc.tmp && mv -f src/compile_cache.cc.tmp src/compile_cache.cc
+
+          awk -v n=1 -v s='#include <locale>' 'NR == n {print s} {print}' src/compile_cache.cc > src/compile_cache.cc.tmp && mv -f src/compile_cache.cc.tmp src/compile_cache.cc
+
           ./configure
 
-          make -j4
+          LC_ALL="en_US.UTF-8" make -j4
 
           rm -r out/Release/obj.target
 
