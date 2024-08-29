@@ -16,8 +16,19 @@ jobs:
         include:
           - os: macOS-13
 
-    # sed -i '' '2520,2540d' src/ghc/filesystem.hpp
     steps:
+      - name: Install MacPorts and clang
+        run:
+          aria2c "https://github.com/macports/macports-base/releases/download/v2.10.1/MacPorts-2.10.1-13-Ventura.pkg"
+          
+          sudo installer -store -pkg MacPorts-2.10.1-13-Ventura.pkg
+
+          echo "macosx_deployment_target  10.13" >> /opt/local/etc/macports/macports.conf
+          
+          sudo port install clang-14 macports-libcxx
+          
+          sudo port select --set clang mp-clang-14
+
       - name: Get source and build
         run:
           initial=$(pwd)
@@ -26,33 +37,15 @@ jobs:
 
           cd "node-${{ env.node_version }}"
 
-          mkdir -p src/ghc && curl --compressed -L "https://github.com/gulrak/filesystem/releases/download/v1.5.14/filesystem.hpp" -o src/ghc/filesystem.hpp
-
-          awk '/\/\// && !done { print "#define GHC_WITH_EXCEPTIONS"; done=1;}; 1;' src/ghc/filesystem.hpp > src/ghc/filesystem.hpp.tmp && mv -f src/ghc/filesystem.hpp.tmp src/ghc/filesystem.hpp
-
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
-          egrep -rl 'std::filesystem' src | xargs -I@ sed -i '' "s#std::filesystem#ghc::filesystem#g" @
+          export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
-          egrep -rl '#include <filesystem>' src | xargs -I@ sed -i '' $'s|#include <filesystem>|#include "ghc/filesystem.hpp"|g' @
+          export CPPFLAGS="-isystem/opt/local/include/libcxx/v1 -D_LIBCPP_DISABLE_AVAILABILITY -nostdinc++ -nostdlib++ -lc++"
 
-          export LC_ALL="en_US.UTF-8"
-
-          awk -v n=1 -v s='#include <locale>' 'NR == n {print s} {print}' src/node_main.cc > src/node_main.cc.tmp && mv -f src/node_main.cc.tmp src/node_main.cc
-
-          awk -v n=98 -v s='  std::locale::global(std::locale("en_US.UTF-8")); std::setlocale(LC_ALL, "en_US.UTF-8");' 'NR == n {print s} {print}' src/node_main.cc > src/node_main.cc.tmp && mv -f src/node_main.cc.tmp src/node_main.cc
-
-          awk -v n=365 -v s='  std::locale::global(std::locale("en_US.UTF-8")); std::setlocale(LC_ALL, "en_US.UTF-8");' 'NR == n {print s} {print}' src/compile_cache.cc > src/compile_cache.cc.tmp && mv -f src/compile_cache.cc.tmp src/compile_cache.cc
-
-          awk -v n=1 -v s='#include <locale>' 'NR == n {print s} {print}' src/compile_cache.cc > src/compile_cache.cc.tmp && mv -f src/compile_cache.cc.tmp src/compile_cache.cc
-
-          awk -v n=111 -v s='  std::locale::global(std::locale("en_US.UTF-8")); std::setlocale(LC_ALL, "en_US.UTF-8");' 'NR == n {print s} {print}' src/api/embed_helpers.cc > src/api/embed_helpers.cc.tmp && mv -f src/api/embed_helpers.cc.tmp src/api/embed_helpers.cc
-
-          awk -v n=1 -v s='#include <locale>' 'NR == n {print s} {print}' src/api/embed_helpers.cc > src/api/embed_helpers.cc.tmp && mv -f src/api/embed_helpers.cc.tmp src/api/embed_helpers.cc
+          export LDFLAGS="-L/opt/local/lib/libcxx -Wl,-rpath,/opt/local/lib/libcxx"
 
           ./configure
-
-          LC_ALL="en_US.UTF-8" make -j4
 
           rm -r out/Release/obj.target
 
