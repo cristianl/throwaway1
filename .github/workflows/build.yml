@@ -17,9 +17,9 @@ jobs:
           - os: macOS-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: 'probe1'
+      #- uses: actions/checkout@v4
+        #with:
+          #ref: 'probe1'
 
       - uses: actions/setup-python@v5
         with:
@@ -43,11 +43,11 @@ jobs:
 
           gclient sync
 
-          rm runtime/bin/security_context_macos.cc runtime/vm/timeline.cc runtime/vm/timeline.h runtime/vm/timeline_macos.cc
+          rm runtime/bin/security_context_macos.cc
 
           af_base="$initial/.github/action-files"
 
-          mv $af_base/runtime/bin/security_context_macos.cc runtime/bin/security_context_macos.cc; mv $af_base/runtime/vm/timeline.cc runtime/vm/timeline.cc; mv $af_base/runtime/vm/timeline.h runtime/vm/timeline.h; mv $af_base/runtime/vm/timeline_macos.cc runtime/vm/timeline_macos.cc
+          mv $af_base/runtime/bin/security_context_macos.cc runtime/bin/security_context_macos.cc; 
 
       - name: Build from source
         run:
