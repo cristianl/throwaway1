@@ -22,7 +22,7 @@ jobs:
         run:
           aria2c "https://packages.macports.org/clang-14/clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2"
 
-          mkdir -p clang-14-14.0.6_2+analyzer.darwin_17.x86_64 &7 cd clang-14-14.0.6_2+analyzer.darwin_17.x86_64
+          mkdir -p clang-14-14.0.6_2+analyzer.darwin_17.x86_64 && cd clang-14-14.0.6_2+analyzer.darwin_17.x86_64
 
           tar -xf ../clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2
 
