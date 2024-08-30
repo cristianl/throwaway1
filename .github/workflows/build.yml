@@ -43,7 +43,7 @@ jobs:
 
           export CPPFLAGS="-I/opt/local/include/libcxx/v1 -D_LIBCPP_DISABLE_AVAILABILITY"
 
-          export LDFLAGS="-L/opt/local/lib/libcxx -lc++ -Wl,-rpath,/opt/local/lib/libcxx"
+          export LDFLAGS="-L/opt/local/lib/libcxx -Wl,-rpath,/opt/local/lib/libcxx"
 
           ./configure
 
