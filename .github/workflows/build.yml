@@ -51,7 +51,7 @@ jobs:
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
-          sed -i '' -e 's/std::u8string/std::filesystem::path/' -e 's|(compile_cache_dir_ / Uint32ToHex(key)).u8string();|compile_cache_dir_ / Uint32ToHex(key);|' src/compile_cache.cc
+          sed -i '' -e 's/std::u8string/std::filesystem::path/' -e 's|(compile_cache_dir_ / Uint32ToHex(key)).u8string();|compile_cache_dir_ / Uint32ToHex(key);|' -e 's|std::string(cache_filename_u8.begin(), cache_filename_u8.end())|cache_filename_u8|' -e '/cache_dir_with_tag_u8/d' -e 's/cache_dir_with_tag_str/cache_dir_with_tag/' -e 's/cache_filename_u8/cache_filename_str/' src/compile_cache.cc
 
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
