@@ -38,7 +38,7 @@ jobs:
 
           sudo rsync -v --ignore-times $_clang_pkg/ /
 
-          sudo sed -i '' -e 's/11.1.0/14.0.6/' -e 's/11/14/' -e '/patch -p0/d' /opt/local/var/macports/sources/rsync.macports.org/macports/release/tarballs/ports/lang/macports-libcxx/Portfile
+          sudo sed -i '' -e 's/11.1.0/14.0.6/' -e 's/11/14/' -e '/patch -p0/d' -e 's|lib/c++/v1|lib|' /opt/local/var/macports/sources/rsync.macports.org/macports/release/tarballs/ports/lang/macports-libcxx/Portfile
 
           awk -v n=1 -v s='#define _LIBCPP_DISABLE_AVAILABILITY' 'NR == n {print s} {print}' /opt/local/libexec/llvm-14/include/c++/v1/__config > __config.tmp
 
