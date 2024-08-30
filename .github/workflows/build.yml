@@ -37,26 +37,8 @@ jobs:
           sudo port install clang-14
 
           sudo rsync -v --ignore-times $_clang_pkg/ /
-
-          sudo sed -i '' -e 's/11.1.0/14.0.6/' -e 's/11/14/' -e '/patch -p0/d' -e 's|lib/c++/v1|lib|' /opt/local/var/macports/sources/rsync.macports.org/macports/release/tarballs/ports/lang/macports-libcxx/Portfile
-
-          awk -v n=1 -v s='#define _LIBCPP_DISABLE_AVAILABILITY' 'NR == n {print s} {print}' /opt/local/libexec/llvm-14/include/c++/v1/__config > __config.tmp
-
-          sudo mv -f __config.tmp /opt/local/libexec/llvm-14/include/c++/v1/__config
-
-          sudo port destroot macports-libcxx
-
-          sudo port install macports-libcxx
           
           sudo port select --set clang mp-clang-14
-
-          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/14.x/libcxxabi/include/cxxabi.h" -o cxxabi.h
-
-          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/14.x/libcxxabi/include/__cxxabi_config.h" -o __cxxabi_config.h
-
-          sudo mv -f cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
-
-          sudo mv -f __cxxabi_config.h /opt/local/include/libcxx/v1/__cxxabi_config.h
 
           rm -f MacPorts-2.10.1-13-Ventura.pkg $_clang_pkg.tbz2
 
@@ -72,9 +54,9 @@ jobs:
 
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
-          export CPPFLAGS="-nostdinc++ -isystem/opt/local/include/libcxx/v1 -D_LIBCPP_DISABLE_AVAILABILITY"
+          export CPPFLAGS="-nostdinc++ -isystem/opt/local/libexec/llvm-14/include/c++/v1 -D_LIBCPP_DISABLE_AVAILABILITY"
 
-          export LDFLAGS="-nostdlib++ -L/opt/local/lib/libcxx -Wl,-rpath,/opt/local/lib/libcxx -lc++"
+          export LDFLAGS="-nostdlib++ -L/opt/local/libexec/llvm-14/lib -Wl,-rpath,/opt/local/libexec/llvm-14/lib -lc++"
 
           ./configure
 
