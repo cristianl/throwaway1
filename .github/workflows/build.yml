@@ -20,13 +20,13 @@ jobs:
     steps:
       - name: Install MacPorts and clang
         run:
-          export _clang_pkg=clang-14-14.0.6_2+analyzer.darwin_17.x86_64
+          export _clang_pkg="clang-14-14.0.6_2+analyzer.darwin_17.x86_64"
           
           aria2c "https://packages.macports.org/clang-14/$_clang_pkg.tbz2"
 
-          mkdir -p $_clang_pkg && cd $_clang_pkg
+          mkdir -p $_clang_pkg
 
-          tar -xf ../$_clang_pkg.tbz2
+          tar -xf $_clang_pkg.tbz2 -C $_clang_pkg
 
           aria2c "https://github.com/macports/macports-base/releases/download/v2.10.1/MacPorts-2.10.1-13-Ventura.pkg"
           
@@ -36,7 +36,7 @@ jobs:
 
           sudo port install clang-14
 
-          sudo rsync -av --ignore-times clang-14-14.0.6_2+analyzer.darwin_17.x86_64/ /
+          sudo rsync -av --ignore-times $_clang_pkg/ /
 
           sudo sed -i -e 's/11.1.0/14.0.6/' -e 's/11/14/' -e '/patch -p0/d' /opt/local/var/macports/sources/rsync.macports.org/macports/release/tarballs/ports/lang/macports-libcxx/Portfile
 
