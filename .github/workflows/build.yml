@@ -24,12 +24,22 @@ jobs:
           sudo installer -pkg MacPorts-2.10.1-13-Ventura.pkg -target /
 
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-          
-          sudo port install clang-14 macports-libcxx clang-11
+
+          sudo port install clang-11 clang-14
+
+          sudo port destroot macports-libcxx
+
+          sudo port install macports-libcxx
           
           sudo port select --set clang mp-clang-14
 
-          sudo cp /opt/local/libexec/llvm-11/include/c++/v1/cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
+          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/11.x/libcxxabi/include/cxxabi.h" -o cxxabi.h
+
+          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/11.x/libcxxabi/include/__cxxabi_config.h" -o __cxxabi_config.h
+
+          sudo mv -f cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
+
+          sudo mv -f __cxxabi_config.h /opt/local/include/libcxx/v1/__cxxabi_config.h
 
       - name: Get source and build
         run:
