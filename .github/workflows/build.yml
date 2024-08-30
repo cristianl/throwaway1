@@ -16,6 +16,7 @@ jobs:
         include:
           - os: macOS-13
 
+    # try to use clang-14 built for hs - if that fails, try to at least have the libs as built for hs
     steps:
       - name: Install MacPorts and clang
         run:
@@ -25,7 +26,17 @@ jobs:
 
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
-          sudo port install clang-11 clang-14
+          sudo port install clang-14
+
+          curl -L "https://packages.macports.org/clang-14/clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2" | tar -x
+
+          sudo rsync -av --ignore-times clang-14-14.0.6_2+analyzer.darwin_17.x86_64/ /
+
+          sudo sed -i -e 's/11.1.0/14.0.6/' -e 's/11/14/' -e '/patch -p0/d' /opt/local/var/macports/sources/rsync.macports.org/macports/release/tarballs/ports/lang/macports-libcxx/Portfile
+
+          awk -v n=1 -v s='#define _LIBCPP_DISABLE_AVAILABILITY' 'NR == n {print s} {print}' /opt/local/libexec/llvm-14/include/c++/v1/__config > __config.tmp
+
+          sudo mv -f __config.tmp /opt/local/libexec/llvm-14/include/c++/v1/__config
 
           sudo port destroot macports-libcxx
 
@@ -33,9 +44,9 @@ jobs:
           
           sudo port select --set clang mp-clang-14
 
-          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/11.x/libcxxabi/include/cxxabi.h" -o cxxabi.h
+          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/14.x/libcxxabi/include/cxxabi.h" -o cxxabi.h
 
-          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/11.x/libcxxabi/include/__cxxabi_config.h" -o __cxxabi_config.h
+          curl -L --compressed "https://github.com/llvm/llvm-project/raw/release/14.x/libcxxabi/include/__cxxabi_config.h" -o __cxxabi_config.h
 
           sudo mv -f cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
 
@@ -50,8 +61,6 @@ jobs:
           cd "node-${{ env.node_version }}"
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
-
-          sed -i '' -e 's/std::u8string/std::filesystem::path/' -e 's|(compile_cache_dir_ / Uint32ToHex(key)).u8string();|compile_cache_dir_ / Uint32ToHex(key);|' -e 's|std::string(cache_filename_u8.begin(), cache_filename_u8.end())|cache_filename_u8|' -e '/cache_dir_with_tag_u8/d' -e 's/cache_dir_with_tag_str/cache_dir_with_tag/' -e 's/cache_filename_u8/cache_filename_str/' src/compile_cache.cc
 
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
