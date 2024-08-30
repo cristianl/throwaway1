@@ -21,7 +21,9 @@ jobs:
         run:
           aria2c "https://github.com/macports/macports-base/releases/download/v2.10.1/MacPorts-2.10.1-13-Ventura.pkg"
           
-          sudo sudo installer -pkg MacPorts-2.10.1-13-Ventura.pkg -target /
+          sudo installer -pkg MacPorts-2.10.1-13-Ventura.pkg -target /
+
+          export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
           
           sudo port install clang-14 macports-libcxx
           
