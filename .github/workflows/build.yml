@@ -47,6 +47,8 @@ jobs:
 
           ./configure
 
+          make -j4
+
           rm -r out/Release/obj.target
 
           rm out/Release/libv8_base_without_compiler.a; rm out/Release/libv8_initializers.a; rm out/Release/libv8_compiler.a; rm out/Release/libnode.a; rm out/Release/libv8_turboshaft.a
