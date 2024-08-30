@@ -36,7 +36,7 @@ jobs:
 
           sudo port install clang-14
 
-          sudo rsync -av --ignore-times $_clang_pkg/ /
+          sudo rsync -v --ignore-times $_clang_pkg/ /
 
           sudo sed -i -e 's/11.1.0/14.0.6/' -e 's/11/14/' -e '/patch -p0/d' /opt/local/var/macports/sources/rsync.macports.org/macports/release/tarballs/ports/lang/macports-libcxx/Portfile
 
