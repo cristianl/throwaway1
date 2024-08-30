@@ -41,9 +41,9 @@ jobs:
 
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
-          export CPPFLAGS="-stdlib++-isystem/opt/local/include/libcxx/v1 -D_LIBCPP_DISABLE_AVAILABILITY"
+          export CPPFLAGS="-nostdinc++ -isystem/opt/local/include/libcxx/v1 -D_LIBCPP_DISABLE_AVAILABILITY"
 
-          export LDFLAGS="-L/opt/local/lib/libcxx -Wl,-rpath,/opt/local/lib/libcxx"
+          export LDFLAGS="-nostdlib++ -L/opt/local/lib/libcxx -Wl,-rpath,/opt/local/lib/libcxx -lc++"
 
           ./configure
 
