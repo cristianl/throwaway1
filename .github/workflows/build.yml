@@ -51,6 +51,8 @@ jobs:
 
           sed -i '' "s/'11.0'/'${{ env.MACOSX_DEPLOYMENT_TARGET }}'/" common.gypi
 
+          sed -i '' -e 's/std::u8string/std::filesystem::path/' -e 's|(compile_cache_dir_ / Uint32ToHex(key)).u8string();|compile_cache_dir_ / Uint32ToHex(key);|' src/compile_cache.cc
+
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
           export CPPFLAGS="-nostdinc++ -isystem/opt/local/include/libcxx/v1 -D_LIBCPP_DISABLE_AVAILABILITY"
