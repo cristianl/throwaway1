@@ -49,7 +49,7 @@ jobs:
 
           mv $af_base/runtime/bin/security_context_macos.cc runtime/bin/security_context_macos.cc; mv $af_base/runtime/vm/timeline.cc runtime/vm/timeline.cc; mv $af_base/runtime/vm/timeline.h runtime/vm/timeline.h; mv $af_base/runtime/vm/timeline_macos.cc runtime/vm/timeline_macos.cc
 
-          sed -i '' 's/Utils::CreateCStringUniquePtr/CStringUniquePtr/g' runtime/vm/timeline.cc runtime/vm/timeline.h runtime/vm/timeline_macos.cc
+          sed -i '' -e 's/Utils::CreateCStringUniquePtr/CStringUniquePtr/g' -e 's/Utils::CStringUniquePtr/CStringUniquePtr/g' runtime/vm/timeline.cc runtime/vm/timeline.h runtime/vm/timeline_macos.cc
 
       - name: Build from source
         run:
