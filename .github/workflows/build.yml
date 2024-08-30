@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Install MacPorts and clang
         run:
+          aria2c "https://packages.macports.org/clang-14/clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2"
+
+          mkdir -p clang-14-14.0.6_2+analyzer.darwin_17.x86_64 &7 cd clang-14-14.0.6_2+analyzer.darwin_17.x86_64
+
+          tar -xf ../clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2
+
           aria2c "https://github.com/macports/macports-base/releases/download/v2.10.1/MacPorts-2.10.1-13-Ventura.pkg"
           
           sudo installer -pkg MacPorts-2.10.1-13-Ventura.pkg -target /
@@ -27,8 +33,6 @@ jobs:
           export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
           sudo port install clang-14
-
-          curl -L "https://packages.macports.org/clang-14/clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2" | tar -x
 
           sudo rsync -av --ignore-times clang-14-14.0.6_2+analyzer.darwin_17.x86_64/ /
 
@@ -51,6 +55,8 @@ jobs:
           sudo mv -f cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
 
           sudo mv -f __cxxabi_config.h /opt/local/include/libcxx/v1/__cxxabi_config.h
+
+          rm -rf MacPorts-2.10.1-13-Ventura.pkg clang-14-14.0.6_2+analyzer.darwin_17.x86_64.tbz2 clang-14-14.0.6_2+analyzer.darwin_17.x86_64
 
       - name: Get source and build
         run:
