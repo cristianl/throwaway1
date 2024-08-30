@@ -29,7 +29,7 @@ jobs:
           
           sudo port select --set clang mp-clang-14
 
-          cp /opt/local/libexec/llvm-11/include/c++/v1/cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
+          sudo cp /opt/local/libexec/llvm-11/include/c++/v1/cxxabi.h /opt/local/include/libcxx/v1/cxxabi.h
 
       - name: Get source and build
         run:
