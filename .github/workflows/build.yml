@@ -4,9 +4,10 @@ on: [push, workflow_dispatch]
 
 env:
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  api_accept: 'Accept: application/vnd.github.v3+json'
-  api_ver: 'X-GitHub-Api-Version: 2022-11-28'
-  rel_filter: 'first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )'
+  # api_accept: 'Accept: application/vnd.github.v3+json'
+  # api_ver: 'X-GitHub-Api-Version: 2022-11-28'
+  # rel_filter: 'first( .[] | select(.prerelease != true) | select(.draft != true) | select(.tag_name | startswith("cli/")) )'
+  BIOME_VERSION: 1.9.4
 
 jobs:
 
@@ -21,15 +22,17 @@ jobs:
             code-target: darwin-x64
 
     steps:
-      # Github docs say jq is installed in the runner image, but wherever it is, it isn't in the PATH https://github.com/actions/runner-images/blob/main/images/macos/macos-12-Readme.md#utilities
-      - name: Install jq
-        uses: dcarbone/install-jq-action@v1.0.1
+      # # Github docs say jq is installed in the runner image, but wherever it is, it isn't in the PATH https://github.com/actions/runner-images/blob/main/images/macos/macos-12-Readme.md#utilities
+      # - name: Install jq
+      #   uses: dcarbone/install-jq-action@v1.0.1
 
       - name: Get source of latest stable CLI release
         run:
-          curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq '${{ env.rel_filter }}' > rel.json
+          # curl --compressed -L -H "${{ env.api_accept }}" -H "${{ env.api_ver }}" 'https://api.github.com/repos/biomejs/biome/releases' | jq '${{ env.rel_filter }}' > rel.json
 
-          TARBALL=$(cat rel.json | jq -r '.tarball_url')
+          # TARBALL=$(cat rel.json | jq -r '.tarball_url')
+
+          TARBALL="https://github.com/biomejs/biome/archive/refs/tags/cli/v$BIOME_VERSION.tar.gz"
 
           mkdir biome && cd biome
 
@@ -45,9 +48,9 @@ jobs:
 
       - name: Build from source
         run:
-          export BIOME_VERSION=$(cat rel.json | jq -r '.tag_name' | sed 's/^cli\/v//')
+          # export BIOME_VERSION=$(cat rel.json | jq -r '.tag_name' | sed 's/^cli\/v//')
 
-          echo $BIOME_VERSION
+          # echo $BIOME_VERSION
           echo ${{ matrix.target }}
 
           cd biome
